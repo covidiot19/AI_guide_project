@@ -1,1 +1,3 @@
-gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 8 index:app
+#!/bin/bash
+pip install -r requirements.txt
+python index.py
