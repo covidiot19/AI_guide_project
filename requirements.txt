@@ -1,6 +1,6 @@
 flask
 flask-cors
-gunicorn  # Render 需要 Gunicorn 來運行 Flask 應用程式
+gunicorn
 torch
 transformers
 datasets
@@ -9,3 +9,4 @@ bitsandbytes
 accelerate
 sentencepiece
 chromadb
+colorama
