@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 旅遊顧問</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #response-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9f5ff;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            color: #333;
+        }
+        #loading {
+            text-align: center;
+            display: none;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #007bff;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI 旅遊顧問</h1>
+        <p>告訴我你的旅遊需求，我會為你規劃最棒的行程！</p>
+        
+        <div class="form-group">
+            <label for="query">你的問題或需求：</label>
+            <textarea id="query" rows="4" placeholder="例如：我想去苗栗玩，喜歡戶外活動，有沒有推薦的景點？"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="location">地點（縣市）：</label>
+            <select id="location">
+                <option value="臺北市">臺北市</option>
+                <option value="新北市">新北市</option>
+                <option value="桃園市">桃園市</option>
+                <option value="臺中市">臺中市</option>
+                <option value="臺南市">臺南市</option>
+                <option value="高雄市">高雄市</option>
+                <option value="基隆市">基隆市</option>
+                <option value="新竹市">新竹市</option>
+                <option value="嘉義市">嘉義市</option>
+                <option value="新竹縣">新竹縣</option>
+                <option value="苗栗縣" selected>苗栗縣</option>
+                <option value="彰化縣">彰化縣</option>
+                <option value="南投縣">南投縣</option>
+                <option value="雲林縣">雲林縣</option>
+                <option value="嘉義縣">嘉義縣</option>
+                <option value="屏東縣">屏東縣</option>
+                <option value="宜蘭縣">宜蘭縣</option>
+                <option value="花蓮縣">花蓮縣</option>
+                <option value="臺東縣">臺東縣</option>
+                <option value="澎湖縣">澎湖縣</option>
+                <option value="金門縣">金門縣</option>
+                <option value="連江縣">連江縣</option>
+            </select>
+        </div>
+        
+        <button onclick="submitQuery()">取得旅遊建議</button>
+        
+        <div id="loading">正在努力為您規劃行程...</div>
+        <div id="response-container"></div>
+        <div id="error-message" class="error"></div>
+    </div>
+
+    <script>
+        async function submitQuery() {
+            const query = document.getElementById('query').value;
+            const location = document.getElementById('location').value;
+            const responseContainer = document.getElementById('response-container');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+
+            errorMessage.textContent = '';
+            responseContainer.textContent = '';
+
+            if (!query || !location) {
+                errorMessage.textContent = '請完整填寫查詢內容和地點。';
+                return;
+            }
+
+            loading.style.display = 'block';
+
+            try {
+                const response = await fetch('https://your-render-project.onrender.com/generate_travel_advice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: query, location: location })
+                });
+
+                if (!response.ok) {
+                    throw new Error('伺服器處理請求時發生錯誤。');
+                }
+
+                const data = await response.json();
+                if (data.error) {
+                    errorMessage.textContent = '伺服器錯誤：' + data.error;
+                } else {
+                    responseContainer.textContent = data.response;
+                }
+
+            } catch (error) {
+                errorMessage.textContent = '連線失敗，請檢查後端伺服器是否正在運行。' + error.message;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+flask
+flask-cors
+gunicorn  # Render 需要 Gunicorn 來運行 Flask 應用程式
+torch
+transformers
+datasets
+peft
+bitsandbytes
+accelerate
+sentencepiece
+chromadb
